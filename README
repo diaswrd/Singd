@@ -1,0 +1,14 @@
+<h1>Simple isometric game demo using node.js</h1>
+<p>A isometric networked game concept made in HTML/Javascript.</p>
+<h2>Modules and versions</h2>
+<ul>
+  <li>Node.js v0.4.2</li>
+  <li>Express v2.3.10 <code>npm install express -g</code></li>
+  <li>socket.IO v0.6.18 <code>npm install socket.io</code></li>
+</ul>
+<h2>How to run:</h2>
+<code>$ git clone git://github.com/diaswrd/Singd.git</code>
+<code>$ cd Singd</code>
+<code>$ sudo node app.js</code>
+<p>So, access <code>http://localhost:8080</code> in your modern browser, try to open more tabs simultaneously, walk around the map and talk in the chat.</p>
+<p>Works best in Webkit browsers, IE 9 and Firefox 4.</p>
