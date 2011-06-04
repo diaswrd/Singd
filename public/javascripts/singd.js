@@ -268,24 +268,7 @@ Player.prototype = {
 			'left': playerLeft
 		});
 		
-		switch (obj.options.orientation) {
-			case "ea":
-				orient = "we";
-				isFlip = true;
-				break;
-			case "se":
-				orient = "sw";
-				isFlip = true;
-				break;
-			case "ne":
-				orient = "nw";
-				isFlip = true;
-				break;
-			default:
-				orient = obj.options.orientation;
-				isFlip = false;
-				break;
-		}
+		orient = h.getOrientation(obj.options.orientation);
 		
 		$(playerSel).find('.player').css({
 			'width': obj.options.width,
@@ -370,24 +353,7 @@ Player.prototype = {
 		var	orient = null;
 		var sprite_coords = obj.sprite_coords;
 		
-		switch (obj.orientation) {
-			case "ea":
-				orient = "we";
-				isFlip = true;
-				break;
-			case "se":
-				orient = "sw";
-				isFlip = true;
-				break;
-			case "ne":
-				orient = "nw";
-				isFlip = true;
-				break;
-			default:
-				orient = obj.orientation;
-				isFlip = false;
-				break;
-		}
+		orient = h.getOrientation(obj.orientation);
 		
 		if (game_ground.container.is(':animated') || player_obj.is(':animated')) {
             if (player_obj.find(".player").is(".standing")){
@@ -444,3 +410,30 @@ Player.prototype = {
 		);
 	}
 };
+
+function Helper() {
+	this.init();
+}
+Helper.prototype = {
+	init: function() {},
+	
+	getOrientation: function(orientation) {
+		isFlip = true;
+		switch (orientation) {
+			case "ea":
+				return "we";
+				break;
+			case "se":
+				return "sw";
+				break;
+			case "ne":
+				return "nw";
+				break;
+			default:
+				isFlip = false;
+				return orientation;
+				break;
+		}
+	}
+};
+var h = new Helper();
