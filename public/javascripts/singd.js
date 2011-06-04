@@ -291,7 +291,7 @@ Player.prototype = {
 			'width': obj.options.width,
 			'height': obj.options.height,
 			'position': 'absolute',
-			'background': 'url("images/default_char.png") no-repeat',
+			'background': 'url('+ obj.options.sprite +') no-repeat',
 			'background-position': (obj.options.width + parseInt(obj.sprite_coords[orient].x)) * - 1 + "px " + obj.sprite_coords[orient].y
 		});
 		
