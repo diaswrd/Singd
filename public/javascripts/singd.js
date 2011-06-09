@@ -38,7 +38,7 @@ Hud.prototype = {
 			'bottom': 5,
 		});
 		
-		$("#chat-input").keypress(function(event) {
+		$("#chat-input").keyup(function(event) {
 			if (event.keyCode == 13) {
 				if ($("#chat-input").val().length > 0) {
 					socket.send({
@@ -47,7 +47,8 @@ Hud.prototype = {
 					obj.sendMsg($("#chat-input").val(), player.options.id, player.options.name);
 					$("#chat-input").val('');
 				}
-			}	
+			}
+                        event.stopPropagation();
 		});
 	},
 	sendMsg: function(message, player_id, player_name) {
@@ -249,6 +250,64 @@ Player.prototype = {
 					obj.walk(obj.id,"#" + $(this).attr("id"));
 				}
 			});
+
+                        // hack to support keyboard movement
+                        // it's probably a lot easier to keep track of the x,y position of the player
+                        // and then build the actualGround from that. but this is a quick hack.
+                        // when we get a keycode, we check to see if it's an arrow key.
+                        // if it is, we extract the current position from the actualGround.selector
+                        // then we calculate the next position, if it's a new position, we call obj.walk()
+                    
+                        var convertSelectorToPoint = function ( selector ) {
+                            var rv = [];
+                            rv.push( selector.substr(8,1) );
+                            rv.push( selector.substr(10,1) );
+                            return( rv );
+                        };
+
+                        $("body").keyup( function( e ) {
+                                var p = convertSelectorToPoint( obj.actualGround.selector );
+                                var x =  + p[0];
+                                var y =  + p[1];
+                                switch( e.keyCode ) {
+                                case 36:
+                                    y = y - 1;
+                                    break;
+                                case 38:
+                                    x = x - 1;
+                                    y = y - 1;
+                                    break;
+                                case 33:
+                                    x = x -1;
+                                    break;
+                                case 37:
+                                    x = x + 1;
+                                    y = y - 1;
+                                    break;
+                                case 39:
+                                    x = x - 1;
+                                    y = y + 1;
+                                    break;
+                                case 35:
+                                    x = x + 1;
+                                    break;
+                                case 40:
+                                    x = x + 1;
+                                    y = y + 1;
+                                    break;
+                                case 34:
+                                    y = y + 1;
+                                    break;
+                                }
+                                if( x > 9 ) { x = 9; }
+                                if( x < 0 ) { x = 0; }
+                                if( y > 9 ) { y = 9; }
+                                if( y < 0 ) { y = 0; }
+                                var newSelector = '#ground-' + x + '-' + y;
+                                if( newSelector != obj.actualGround.selector ) {
+                                    obj.walk(obj.id, newSelector);
+                                }
+                            });
 			
 			playerTop = Math.ceil(obj.actualGround.offset().top) - obj.options.height/2;
 			
