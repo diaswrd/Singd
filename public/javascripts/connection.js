@@ -68,6 +68,7 @@ $(document).ready(function (){
 		} else if ('new_player' in obj) {
 			var new_player = new Player({
 				id: obj.new_player.player_id,
+				name: obj.new_player.player_name,
 				container: "#container", 
 				width: 32,
 				height: 33,
