@@ -12,6 +12,70 @@ var	player = null;
 var	name = "";
 var other_players = new Array();
 
+//Socket messages handle
+var actionReceivers = {
+	'buffer': function(data) {
+		player = new Player({
+			id: data.your_id,
+			name: name,
+			container: "body", 
+			width: 32,
+			height: 33,
+			sprite: "images/default_char.png",
+			coords: "#ground-1-1"
+		});
+		
+		default_hud = new Hud({
+			container: "body"
+		});
+		
+		for (i = 0; i < data.other_players.length; i++) {
+			other_players[i] = new Player({
+				id: data.other_players[i].player_id,
+				name: data.other_players[i].player_name,
+				container: "#container",
+				width: 32,
+				height: 33,
+				sprite: "images/default_char.png",
+				coords: data.other_players[i].actualGround,
+				orientation: data.other_players[i].orientation,
+			});
+		}
+	},
+	'player_move': function(data) {
+		for (i = 0; i < other_players.length; i++) {
+			if (other_players[i].id == data.player_id) {
+				$(".gr-" + other_players[i].id).removeClass("gr-" + other_players[i].id);
+				$(data.actualGround).addClass("gr-" + other_players[i].id);
+				other_players[i].walk(other_players[i].id,data.actualGround);
+			}
+		}
+	},
+	'new_player': function(data) {
+		var new_player = new Player({
+			id: data.player_id,
+			name: data.player_name,
+			container: "#container", 
+			width: 32,
+			height: 33,
+			sprite: "images/default_char.png",
+			coords: data.actualGround
+		});
+		other_players.push(new_player);
+	},
+	'chat': function(data) {
+		default_hud.sendMsg(data.message, data.player_id, data.player_name);
+	},
+	'player_leave': function(data) {
+		$("#pl-" + data).remove();
+		for (i = 0; i < other_players.length; i++) {
+			if (data == other_players[i].id) {
+				other_players.splice(i, 1);
+			}
+		}
+	}
+};
+
 //Socket.IO client-side connections 
 $(document).ready(function (){ 
 	socket = new io.Socket(null, {port: 8080});
@@ -29,57 +93,11 @@ $(document).ready(function (){
 			player_name: name
 		});
 	}); 
-	socket.on('message', function(obj){
-		if ('buffer' in obj) {
-			player = new Player({
-				id: obj.buffer.your_id,
-				name: name,
-				container: "body", 
-				width: 32,
-				height: 33,
-				sprite: "images/default_char.png",
-				coords: "#ground-1-1"
-			});
-			
-			default_hud = new Hud({
-				container: "body"
-			});
-			
-			for (i = 0; i < obj.buffer.other_players.length; i++) {
-				other_players[i] = new Player({
-					id: obj.buffer.other_players[i].player_id,
-					name: obj.buffer.other_players[i].player_name,
-					container: "#container",
-					width: 32,
-					height: 33,
-					sprite: "images/default_char.png",
-					coords: obj.buffer.other_players[i].actualGround,
-					orientation: obj.buffer.other_players[i].orientation,
-				});
+	socket.on('message', function(obj) {
+		for (action in obj) {
+			if (action in actionReceivers) {
+				actionReceivers[action](obj[action]);
 			}
-		} else if ('player_move' in obj) {
-			for (i = 0; i < other_players.length; i++) {
-				if (other_players[i].id == obj.player_move.player_id) {
-					$(".gr-" + other_players[i].id).removeClass("gr-" + other_players[i].id);
-					$(obj.player_move.actualGround).addClass("gr-" + other_players[i].id);
-					other_players[i].walk(other_players[i].id,obj.player_move.actualGround);
-				}
-			}
-		} else if ('new_player' in obj) {
-			var new_player = new Player({
-				id: obj.new_player.player_id,
-				name: obj.new_player.player_name,
-				container: "#container", 
-				width: 32,
-				height: 33,
-				sprite: "images/default_char.png",
-				coords: obj.new_player.actualGround
-			});
-			other_players.push(new_player);
-		} else if ('chat' in obj) {
-			default_hud.sendMsg(obj.chat.message, obj.chat.player_id, obj.chat.player_name);
-		} else if ('player_leave' in obj) {
-			$("#pl-" + obj.player_leave).remove();
 		}
 	}); 
 	socket.on('disconnect', function(){ window.location.reload(); });
