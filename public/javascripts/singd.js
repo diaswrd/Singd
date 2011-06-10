@@ -55,7 +55,7 @@ Hud.prototype = {
 		var obj = $("#pl-" + player_id);
 		var	ballonLeft = 0;
 		
-		obj.find(".player-balloon p").text(player_name + ': ' + message);
+		obj.find(".player-balloon p").text(message);
 		
 		// trying to fix some break-line problems.
 		obj.find(".player-balloon").css({'width': 180});
@@ -226,6 +226,9 @@ Player.prototype = {
 									"<p></p>" +
 								"</div>" +
 								"<span class='player standing'><!-- --></span>" +
+								"<div class='player-name'>" +
+									"<p>"+ obj.options.name +"</p>" +
+								"</div>" +
 							"</div>");
 		
 		playerSel = "#pl-" + obj.id;
@@ -335,6 +338,11 @@ Player.prototype = {
 			'position': 'absolute',
 			'background': 'url('+ obj.options.sprite +') no-repeat',
 			'background-position': (obj.options.width + parseInt(obj.sprite_coords[orient].x)) * - 1 + "px " + obj.sprite_coords[orient].y
+		});
+		
+		$(playerSel).find('.player-name').css({
+			'top': obj.options.height + 2,
+			'left': obj.options.width/2 - $(playerSel).find('.player-name').find('p').width()/2
 		});
 		
 		if (isFlip) {
