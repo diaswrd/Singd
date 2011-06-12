@@ -10,7 +10,11 @@ $ git clone git://github.com/diaswrd/Singd.git
 $ cd Singd
 $ sudo node app.js
 
-So, access http://localhost:8080 in your modern browser, try to open more tabs simultaneously, walk around the map and talk in the chat.
+So, access http://localhost:8080 in your modern browser, try to open more
+tabs simultaneously, walk around the map and talk in the chat.
+
 Tested in Ubuntu 10.10.
+
 Works best in Webkit browsers, IE 9 and Firefox 4.
+
 Character sprite by Reiner Proken - http://reinerstilesets.de 
