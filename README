@@ -1,5 +1,7 @@
 Singd is a isometric networked game concept made in HTML/Javascript.
 
+Live demo: http://fierce-sky-691.herokuapp.com/ (Running with XHR-Polling, for better real-time results please run it localhost and access with a Websockets-ready browser). Thanks Heroku team!
+
 Modules and versions used:
 Node.js v0.4.2     http://nodejs.org
 Express v2.3.10    $ npm install express -g
